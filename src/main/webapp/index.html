@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<!-- FIXME デプロイ前に外部リソースのプロトコル限定を削除する -->
+<html>
+<head>
+<meta charset="UTF-8">
+<title>履歴書ジェネレータ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="maruTA_bis5">
+<meta name="description"
+	content="「ほぼ」JIS規格準拠の履歴書を生成するジェネレータ。使用は自己責任でお願いします。">
+<meta name="keywords" content="履歴書">
+<meta name="X-UA-Compatible" content="IE=edge">
+<link rel="favicon" href="/favicon.ico">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div class="jumbotron">
+		<div class="container">
+			<h1>履歴書ジェネレータ</h1>
+			<p>「ほぼ」JIS規格準拠の履歴書を生成するジェネレータ。使用は自己責任でお願いします。</p>
+		</div>
+	</div>
+
+	<div class="container">
+
+		<!-- 左 -->
+		<div class="row" id="leftParams">
+			<!-- 出力日 -->
+			<div class="col-md-12">
+				<h2>出力日</h2>
+				<button id="useToday">今日の日付を使う</button><!-- TODO JS impl -->
+				<input type="date" name="reportDate" id="reportDate">
+			</div>
+			<div class="col-md-12">
+				<h2>個人情報</h2>
+				<!-- 氏名・氏名カナ -->
+				<div>
+					<div>
+						<label for="name">氏名</label>
+						<input type="text" name="name" id="name">
+					</div>
+					<div>
+						<label for="nameKana">氏名カナ</label>
+						<input type="text" name="nameKana" id="nameKana">
+					</div>
+				</div>
+				<!-- 誕生日 -->
+				<div>
+					<label for="birthday">誕生日</label>
+					<input type="date" name="birthday" id="birthday">
+				</div>
+			</div>
+			<!-- 現住所 -->
+			<div class="col-md-12">
+				<h2>現住所</h2>
+				<div>
+					<label for="mainAddressPostal">郵便番号</label>
+					<input type="text" name="mainAddressPostal" id="mainAddressPostal">
+				</div>
+				<div>
+					<label for="mainAddress">住所</label>
+					<input type="text" name="mainAddress" id="mainAddress">
+				</div>
+				<div>
+					<label for="mainAddressKana">住所カナ</label>
+					<input type="text" name="mainAddressKana" id="mainAddressKana">
+				</div>
+			</div>
+			<!-- 連絡先住所 -->
+			<div class="col-md-12">
+				<h2>他の連絡先</h2>
+				<div>
+					<label for="subAddressPostal">郵便番号</label>
+					<input type="text" name="subAddressPostal" id="subAddressPostal">
+				</div>
+				<div>
+					<label for="subAddress">住所</label>
+					<input type="text" name="subAddress" id="subAddress">
+				</div>
+				<div>
+					<label for="subAddressKana">住所カナ</label>
+					<input type="text" name="subAddressKana" id="subAddressKana">
+				</div>
+			</div>
+			<!-- 電話番号1・2 -->
+			<div class="col-md-12">
+				<h2>電話番号</h2>
+				<div>
+					<label for="mainTel">主</label>
+					<input type="tel" name="mainTel" id="mainTel">
+				</div>
+				<div>
+					<label for="subTel">副</label>
+					<input type="tel" name="subTel" id="subTel">
+				</div>
+			</div>
+			<!-- 学歴・職歴 ※あふれた場合は右へ-->
+			<div class="col-md-12">
+				<h2>学歴</h2>
+				<div id="eduBgInsertTarget">
+				
+				</div>
+				<button id="eduBgAdd">入力欄追加</button>
+			</div>
+			<div class="col-md-12">
+				<h2>職歴</h2>
+				<div id="careerInsertTarget">
+				</div>
+				<button id="careerAdd">入力欄追加</button>
+			</div>
+			<div class="col-md-12">
+				<h2>賞罰</h2>
+				<div><!-- TODO isEnabled == falseの場合入力無効化 -->
+					<label for="isRapEnable">賞罰を記載する</label>
+					<input type="checkbox" name="rewardAndPunishmentEnable" id="rewardAndPunishmentEnable" value="false">
+				</div>
+				<div id="rapInsertTarget">
+				</div>
+				<button id="rapAdd">入力欄追加</button>
+			</div>
+		</div>
+		<!-- 右 -->
+		<div class="row" id="rightParams">
+			<!-- 免許・資格 -->
+			<div class="col-md-12">
+				<h2>免許・資格</h2>
+				<div id="licenseAddTarget">
+				</div>
+				<button id="licenseAdd">入力欄追加</button>
+			</div>
+			<!-- 志望動機など -->
+			<div class="col-md-12">
+				<h2>志望の動機、特技、好きな学科、アピールポイントなど</h2>
+				<textarea name="pr" id="pr"></textarea>
+			</div>
+			<!-- 通勤時間 -->
+			<div class="col-md-12">
+				<h2>通勤時間</h2>
+				<input type="text" name="commutingTime" id="commutingTime">
+			</div>
+			<div class="col-md-12">
+				<h2>扶養・配偶者</h2>
+				<div>
+					<!-- 扶養家族数 -->
+					<label for="numFamily">扶養家族数</label>
+					<input type="number" name="numFamily" id="numFamily">
+				</div>
+				<div>
+					<!-- 配偶者有無 -->
+					<span>配偶者有無</span>
+					<label for="hasSpouse">有</label>
+					<input type="radio" name="hasSpouse" id="hasSpouse" value="true">
+					<label for="noSpouse">無</label>
+					<input type="radio" name="hasSpouse" id="noSpouse" value="false" checked>
+				</div>
+				<div>
+					<!-- 配偶者の扶養義務 ※配偶者有無=無の場合は入力無効にし、常に"無" -->
+					<span>配偶者の扶養義務</span>
+					<label for="hasSpouseDependent">有</label>
+					<input type="radio" name="hasSpouseDependent" id="hasSpouseDependent" value="true">
+					<label for="noSpouseDependent">無</label>
+					<input type="radio" name="hasSpouseDependent" id="noSpouseDependent" value="false" checked>
+				</div>
+			</div>
+			<!-- 本人希望記入欄 -->
+			<div class="col-md-12">
+				<h2>本人希望記入欄</h2>
+				<textarea name="desire" id="desire"></textarea>
+			</div>
+		</div>
+		
+		<!-- TODO 免責事項的な -->
+		<!-- submit -->
+		<button id="submitBtn">作るよ！</button> 
+
+	</div>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+	<script	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script>
+		// TODO 後で外部化したい
+		function initListener() {
+			$("#submitBtn").click(onSubmit);
+			$("#useToday").click(onUseTodayPress);
+			$("#eduBgAdd").click(onEduBgAddPress);
+			$("#careerAdd").click(onCareerAddPress);
+			$("#rapAdd").click(onRapAddPress);
+			$("#licenseAdd").click(onLicenseAddPress);
+		}
+		function initEduBgCareerRapInput() {
+			onEduBgAddPress();
+			onCareerAddPress();
+			onRapAddPress();
+			onLicenseAddPress();
+		}
+		$(document).ready(initListener);
+		$(document).ready(initEduBgCareerRapInput);
+		
+		function onUseTodayPress() {
+			// TODO 実装後回し
+			window.alert("実装されていないのであります");
+		}
+		eduBgCnt = 0;
+		function onEduBgAddPress() {
+			eduBgCnt++;
+			var html = '<div><label for="eduBgYearMonthX">年月</label><input type="date" name="eduBgYearMonthX" id="eduBgYearMonthX"></div><div><label for="eduBgContentX">内容</label>	<input type="text" name="eduBgContentX" id="eduBgContentX"></div>';
+			$("#eduBgInsertTarget").append(replaceAll(html, "X", eduBgCnt));
+		}
+		careerCnt = 0;
+		function onCareerAddPress() {
+			careerCnt++;
+			var html = '<div><label for="careerYearMonthX">年月</label><input type="date" name="careerYearMonthX" id="careerYearMonthX"></div><div><label for="careerContentX">内容</label>	<input type="text" name="careerContentX" id="careerContentX"></div>';
+			$("#careerInsertTarget").append(replaceAll(html, "X", careerCnt));
+		}
+		rapCnt = 0;
+		function onRapAddPress() {
+			rapCnt++;
+			var html = '<div><label for="rapYearMonthX">年月</label><input type="date" name="rapYearMonthX" id="rapYearMonthX"></div><div><label for="rapContentX">内容</label>	<input type="text" name="rapContentX" id="rapContentX"></div>';
+			$("#rapInsertTarget").append(replaceAll(html, "X", rapCnt));
+		}
+		licenseCnt = 0;
+		function onLicenseAddPress() {
+			licenseCnt++;
+			var html = '<div><label for="licenseYearMonthX">年月</label><input type="date" name="licenseYearMonthX" id="licenseYearMonthX"></div><div><label for="licenseContentX">内容</label>	<input type="text" name="licenseContentX" id="licenseContentX"></div>';
+			$("#licenseInsertTarget").append(replaceAll(html, "X", licenseCnt));
+		}
+		function replaceAll(expr, org, dest) {
+			return expr.split(org).join(dest);
+		}
+		
+		function onSubmit() {
+			var postContent = {};
+			postContent["reportDate"] = $("#reportDate").val();
+			postContent["name"] = $("#name").val();
+			postContent["nameKana"] = $("#nameKana").val();
+			postContent["birthday"] = $("#birthday").val();
+			postContent["mainAddressPostal"] = $("#mainAddressPostal").val();
+			postContent["mainAddressKana"] = $("#mainAddressKana").val();
+			postContent["mainAddress"] = $("#mainAddress").val();
+			postContent["subAddressPostal"] = $("#subAddressPostal").val();
+			postContent["subAddressKana"] = $("#subAddressKana").val();
+			postContent["subAddress"] = $("#subAddress").val();
+			postContent["mainTel"] = $("#mainTel").val();
+			postContent["subTel"] = $("#subTel").val();
+			var i;
+			for (i=1; i<=eduBgCnt; i++) {
+				postContent["eduBgYearMonth"+i] = $("#eduBgYearMonth"+i).val();
+				postContent["eduBgContent"+i] = $("#eduBgContent"+i).val();
+			}
+			postContent["eduBgCnt"] = eduBgCnt;
+			
+			for (i=1; i<=careerCnt; i++) {
+				postContent["careerYearMonth"+i] = $("#careerYearMonth"+i).val();
+				postContent["careerContent"+i] = $("#careerContent"+i).val();
+			}
+			postContent["careerCnt"] = careerCnt;
+			
+			for (i=1; i<=rapCnt; i++) {
+				postContent["rapYearMonth"+i] = $("#rapYearMonth"+i).val();
+				postContent["rapContent"+i] = $("#rapContent"+i).val();
+			}
+			postContent["rapCnt"] = rapCnt;
+			
+			postContent["isRapEnable"] = $("#isRapEnable").val();
+			
+			for (i=1; i<=licenseCnt; i++) {
+				postContent["licenseYearMonth"+i] = $("#licenseYearMonth"+i).val();
+				postContent["licenseContent"+i] = $("#licenseContent"+i).val();
+			}
+			postContent["licenseCnt"] = licenseCnt;
+			
+			postContent["pr"] = $("#pr").val();
+			postContent["numFamily"] = $("#numFamily").val();
+			postContent["hasSpouse"] = $("#hasSpouse").val() ? true : false;
+			postContent["hasSpouseDependent"] = $("#hasSpouseDependent").val() ? true : false;
+			postContent["desire"] = $("#desire").val();
+			
+			var xhr = $.ajax({
+				type: "POST",
+				url: "./generate",
+				cache: false,
+				data: postContent,
+				dataType: "json",
+			})
+			
+			xhr.done(function(json) {
+				var result = json;
+				var token = result["token"];
+				window.location.pathname = "/resumegen/generate?token="+token;
+			})
+		}
+	</script>
+</body>
+</html>
